@@ -1,6 +1,15 @@
 <template>
-	<button @click="click">click</button>
-	{{ JSON.stringify(this.$store.state) }}
+	<main>
+		<div class="chat_wrap">
+			<div class="chat"></div>
+			<div class="room_list">
+				<div v-for="room in this.$store.state.rooms" :key="room.name">{{ room.name }}</div>
+			</div>
+		</div>
+		<div class="input">
+			<input type="text" />
+		</div>
+	</main>
 </template>
 
 <script>
@@ -10,24 +19,49 @@ export default {
 	name: 'App',
 	setup() {
 		const store = useStore();
-		function click() {
-			store.dispatch('getRooms');
-		}
-		return {
-			click,
-		};
+		store.dispatch('getRooms');
+		return {};
 	},
 	components: {},
 };
 </script>
 
 <style>
+*,
+*::after,
+*::before {
+	box-sizing: border-box;
+}
+body {
+	padding: 0;
+	margin: 0;
+	height: 100vh;
+}
 #app {
-	font-family: Avenir, Helvetica, Arial, sans-serif;
-	-webkit-font-smoothing: antialiased;
-	-moz-osx-font-smoothing: grayscale;
-	text-align: center;
-	color: #2c3e50;
-	margin-top: 60px;
+	height: 100%;
+}
+main {
+	width: 100%;
+	height: 100%;
+	display: flex;
+	flex-direction: column;
+}
+.chat_wrap {
+	width: 100%;
+	flex: 1 0 400px;
+	display: flex;
+	flex-wrap: nowrap;
+}
+.chat {
+	flex: 1 0 320px;
+	background: red;
+}
+.room_list {
+	flex: 0 0 200px;
+	background: green;
+}
+.input {
+	flex: 0 0 48px;
+	background: blue;
 }
 </style>
