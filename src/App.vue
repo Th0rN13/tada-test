@@ -1,8 +1,22 @@
-<template>chat</template>
+<template>
+	<button @click="click">click</button>
+	{{ JSON.stringify(this.$store.state) }}
+</template>
 
 <script>
+import { useStore } from 'vuex';
+
 export default {
-	name: "App",
+	name: 'App',
+	setup() {
+		const store = useStore();
+		function click() {
+			store.dispatch('getRooms');
+		}
+		return {
+			click,
+		};
+	},
 	components: {},
 };
 </script>
