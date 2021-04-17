@@ -1,6 +1,11 @@
 <template>
 	<main>
-		<div class="chat_wrap">
+		<div class="nav">
+			<router-link to="/">Home</router-link>
+			<router-link to="/room/name2">Room</router-link>
+		</div>
+		<router-view />
+		<!-- <div class="chat_wrap">
 			<div class="chat"></div>
 			<div class="room_list">
 				<div v-for="room in this.$store.state.rooms" :key="room.name">{{ room.name }}</div>
@@ -8,7 +13,7 @@
 		</div>
 		<div class="input">
 			<input type="text" />
-		</div>
+		</div> -->
 	</main>
 </template>
 
