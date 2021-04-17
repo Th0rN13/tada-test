@@ -54,14 +54,11 @@ main {
 }
 .chat {
 	flex: 1 0 320px;
-	background: red;
 }
 .room_list {
 	flex: 0 0 200px;
-	background: green;
 }
 .input {
 	flex: 0 0 48px;
-	background: blue;
 }
 </style>
