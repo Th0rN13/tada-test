@@ -11,13 +11,20 @@ export const store = new Vuex.Store({
 			status: 'offline',
 		};
 	},
-	getters: {},
+	getters: {
+		roomMessages: (state) => (findRoom) => {
+			return state.messages.filter(({ room }) => findRoom === room);
+		},
+	},
 	mutations: {
 		updateRooms(state, payload) {
 			state.rooms = payload;
 		},
 		updateStatus(state, payload) {
 			state.status = payload ? 'online' : 'offline';
+		},
+		message(state, message) {
+			state.messages.push(message);
 		},
 	},
 	actions: {
@@ -29,7 +36,7 @@ export const store = new Vuex.Store({
 			store.commit('updateStatus', status);
 		},
 		async message(store, message) {
-			console.log('action message: ', message);
+			store.commit('message', message);
 		},
 	},
 });

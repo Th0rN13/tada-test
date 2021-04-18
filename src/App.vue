@@ -47,8 +47,7 @@ main {
 .chat_wrap {
 	width: 100%;
 	flex: 1 0 400px;
-	display: flex;
-	flex-wrap: nowrap;
+	overflow: auto;
 }
 .chat {
 	flex: 1 0 320px;

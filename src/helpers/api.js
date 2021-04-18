@@ -42,7 +42,14 @@ export function connectWebSocket(name = 'anonymous', connectCb, messageCb) {
 			connectWebSocket(name, connectCb, messageCb);
 		}, 500);
 	};
-	ws.onmessage = (event) => messageCb(event?.data);
+	ws.onmessage = (event) => {
+		try {
+			const message = JSON.parse(event?.data);
+			messageCb(message);
+		} catch (err) {
+			console.log(err);
+		}
+	};
 	return ws;
 }
 

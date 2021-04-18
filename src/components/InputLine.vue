@@ -6,7 +6,7 @@
 </template>
 
 <script>
-import { sendMessage } from '@/helpers/api';
+import { ping, sendMessage } from '@/helpers/api';
 
 export default {
 	name: 'InputLine',
@@ -18,8 +18,8 @@ export default {
 	},
 	methods: {
 		send() {
-			console.log('try to send:', this.line);
-			sendMessage('room', this.line, Math.random());
+			ping();
+			sendMessage('this.room', this.line);
 			this.line = '';
 		},
 	},
