@@ -1,24 +1,13 @@
 <template>
 	<main>
-		<div class="nav">
-			<router-link to="/">Home</router-link>
-			<router-link to="/room/name2">Room</router-link>
-		</div>
+		<Nav />
 		<router-view />
-		<!-- <div class="chat_wrap">
-			<div class="chat"></div>
-			<div class="room_list">
-				<div v-for="room in this.$store.state.rooms" :key="room.name">{{ room.name }}</div>
-			</div>
-		</div>
-		<div class="input">
-			<input type="text" />
-		</div> -->
 	</main>
 </template>
 
 <script>
 import { useStore } from 'vuex';
+import Nav from '@/components/Nav.vue';
 
 export default {
 	name: 'App',
@@ -27,7 +16,9 @@ export default {
 		store.dispatch('getRooms');
 		return {};
 	},
-	components: {},
+	components: {
+		Nav,
+	},
 };
 </script>
 
