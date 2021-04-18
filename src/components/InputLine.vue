@@ -6,11 +6,11 @@
 </template>
 
 <script>
-import { ping, sendMessage } from '@/helpers/api';
+import { sendMessage } from '@/helpers/api';
 
 export default {
 	name: 'InputLine',
-	props: { room: String },
+	props: ['room'],
 	data() {
 		return {
 			line: '',
@@ -18,8 +18,7 @@ export default {
 	},
 	methods: {
 		send() {
-			ping();
-			sendMessage('this.room', this.line);
+			sendMessage(this.room, this.line);
 			this.line = '';
 		},
 	},

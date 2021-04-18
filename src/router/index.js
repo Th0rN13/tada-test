@@ -12,6 +12,7 @@ const routes = [
 		path: '/room/:room',
 		name: 'Room',
 		component: Room,
+		props: true,
 	},
 ];
 

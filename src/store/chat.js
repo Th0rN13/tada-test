@@ -1,5 +1,5 @@
 import Vuex from 'vuex';
-import { getRooms, connectWebSocket, getSettings } from '@/helpers/api';
+import { getRooms, connectWebSocket, getSettings, getRoomHistory } from '@/helpers/api';
 
 export const store = new Vuex.Store({
 	state() {
@@ -17,8 +17,16 @@ export const store = new Vuex.Store({
 		},
 	},
 	mutations: {
+		removeDuplicateMessages(state) {
+			state.messages = state.messages.filter(
+				({ created }, idx, arr) => idx === arr.findIndex((msg) => msg.created === created),
+			);
+		},
 		updateRooms(state, payload) {
 			state.rooms = payload;
+		},
+		updateRoomHistory(state, payload) {
+			state.messages = state.messages.concat(payload);
 		},
 		updateSettings(state, payload) {
 			state.settings = payload;
@@ -34,6 +42,11 @@ export const store = new Vuex.Store({
 		async getRooms(store) {
 			const rooms = await getRooms();
 			store.commit('updateRooms', rooms?.result);
+		},
+		async getRoomHistory(store, room) {
+			const roomHistory = await getRoomHistory(room);
+			store.commit('updateRoomHistory', roomHistory?.result);
+			store.commit('removeDuplicateMessages');
 		},
 		async getSettings(store) {
 			const settings = await getSettings();

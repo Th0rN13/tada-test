@@ -4,7 +4,7 @@
 			<b>{{ message?.sender?.username || 'unknown' }}:</b> {{ message?.text }}
 		</p>
 	</div>
-	<InputLine room="kozma" />
+	<InputLine :room="room" />
 </template>
 
 <script>
@@ -14,13 +14,15 @@ import InputLine from '@/components/InputLine.vue';
 
 export default {
 	name: 'Room',
+	props: ['room'],
 	components: {
 		InputLine,
 	},
-	setup() {
+	setup(props) {
 		const store = useStore();
+		store.dispatch('getRoomHistory', props.room);
 		return {
-			roomMessages: computed(() => store.getters.roomMessages('kozma')),
+			roomMessages: computed(() => store.getters.roomMessages(props.room)),
 		};
 	},
 };
