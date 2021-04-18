@@ -14,8 +14,9 @@ export default {
 	name: 'App',
 	setup() {
 		const store = useStore();
-		store.dispatch('getRooms');
 		connectStoreToChat(store);
+		store.dispatch('getRooms');
+		store.dispatch('getSettings');
 		return {};
 	},
 	components: {

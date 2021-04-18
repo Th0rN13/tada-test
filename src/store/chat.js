@@ -1,5 +1,5 @@
 import Vuex from 'vuex';
-import { getRooms, connectWebSocket } from '@/helpers/api';
+import { getRooms, connectWebSocket, getSettings } from '@/helpers/api';
 
 export const store = new Vuex.Store({
 	state() {
@@ -20,6 +20,9 @@ export const store = new Vuex.Store({
 		updateRooms(state, payload) {
 			state.rooms = payload;
 		},
+		updateSettings(state, payload) {
+			state.settings = payload;
+		},
 		updateStatus(state, payload) {
 			state.status = payload ? 'online' : 'offline';
 		},
@@ -31,6 +34,10 @@ export const store = new Vuex.Store({
 		async getRooms(store) {
 			const rooms = await getRooms();
 			store.commit('updateRooms', rooms?.result);
+		},
+		async getSettings(store) {
+			const settings = await getSettings();
+			store.commit('updateSettings', settings?.result);
 		},
 		async connectStatus(store, status) {
 			store.commit('updateStatus', status);

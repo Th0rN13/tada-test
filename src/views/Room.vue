@@ -1,7 +1,7 @@
 <template>
 	<div class="chat_wrap">
 		<p v-for="message in this.roomMessages" :key="message.created">
-			{{ message.text }}
+			<b>{{ message?.sender?.username || 'unknown' }}:</b> {{ message?.text }}
 		</p>
 	</div>
 	<InputLine room="kozma" />
