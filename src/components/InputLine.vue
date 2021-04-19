@@ -6,21 +6,23 @@
 </template>
 
 <script>
-import { sendMessage } from '@/helpers/api';
+import { ref } from 'vue';
+import { useStore } from 'vuex';
 
 export default {
 	name: 'InputLine',
 	props: ['room'],
-	data() {
-		return {
-			line: '',
+	setup(props) {
+		const store = useStore();
+		const line = ref('');
+		const send = () => {
+			store.dispatch('newSendMessage', { room: props.room, text: line.value });
+			line.value = '';
 		};
-	},
-	methods: {
-		send() {
-			sendMessage(this.room, this.line);
-			this.line = '';
-		},
+		return {
+			line,
+			send,
+		};
 	},
 };
 </script>

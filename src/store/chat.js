@@ -1,14 +1,23 @@
 import Vuex from 'vuex';
-import { getRooms, connectWebSocket, getSettings, getRoomHistory } from '@/helpers/api';
+import { v4 as uuid } from '@lukeed/uuid';
+import {
+	getRooms,
+	connectWebSocket,
+	getSettings,
+	getRoomHistory,
+	sendMessage,
+} from '@/helpers/api';
 
 export const store = new Vuex.Store({
 	state() {
 		return {
+			username: 'myname',
 			rooms: [],
 			messages: [],
 			users: [],
 			serverSettings: {},
 			status: 'offline',
+			sendQueue: [],
 		};
 	},
 	getters: {
@@ -37,6 +46,12 @@ export const store = new Vuex.Store({
 		message(state, message) {
 			state.messages.push(message);
 		},
+		addToQueue(state, message) {
+			state.sendQueue.push(message);
+		},
+		filterQueue(state, filterId) {
+			state.sendQueue = state.sendQueue.filter(({ id }) => id !== filterId);
+		},
 	},
 	actions: {
 		async getRooms(store) {
@@ -57,6 +72,14 @@ export const store = new Vuex.Store({
 		},
 		async message(store, message) {
 			store.commit('message', message);
+			if (message.id) {
+				store.commit('filterQueue', message.id);
+			}
+		},
+		async newSendMessage(store, { text, room }) {
+			const id = uuid();
+			store.commit('addToQueue', { text, room, id });
+			sendMessage(room, text, id);
 		},
 	},
 });
