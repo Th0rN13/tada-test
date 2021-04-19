@@ -104,6 +104,12 @@ export const store = new Vuex.Store({
 		},
 		async newSendMessage(store, { text, room }) {
 			const id = uuid();
+			if (
+				Number.isInteger(+store.state.settings?.max_message_length) &&
+				text.length > +store.state.settings?.max_message_length
+			) {
+				text = text.slice(0, +store.state.settings?.max_message_length);
+			}
 			store.commit('addToQueue', { text, room, id });
 			sendMessage(room, text, id);
 		},
