@@ -2,7 +2,11 @@
 	<input type="text" :value="username" @change="change" @keydown.enter="updateName" />
 	<button @click="updateName">Change name</button>
 	<p v-for="room in roomList" :key="room">
-		<router-link :to="`/room/${room.name}`">{{ room.name }} room</router-link>
+		<router-link :to="`/room/${room.name}`">{{ room.name }} room</router-link><br />
+		<span
+			>last message: <b>{{ room?.last_message?.sender?.username || 'unknown' }}</b>
+			{{ room?.last_message?.text }}</span
+		>
 	</p>
 </template>
 

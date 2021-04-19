@@ -1,17 +1,36 @@
 <template>
 	<div class="nav">
 		<router-link to="/" exact>Home</router-link>
-		<router-link to="/room/kozma">Kozma room</router-link>
-		<router-link to="/room/user_room">User room</router-link>
+		<div v-for="room in openedRooms" :key="room">
+			<router-link :to="`/room/${room}`">{{ room }} room</router-link>
+			<button class="close" @click="close(room)">x</button>
+		</div>
 		<div class="status" :class="{ online: status }"></div>
 	</div>
 </template>
 
 <script>
+import { computed } from 'vue';
+import { useStore } from 'vuex';
+import { useRouter, useRoute } from 'vue-router';
+
 export default {
 	props: ['status'],
 	setup() {
-		return {};
+		const router = useRouter();
+		const route = useRoute();
+		const store = useStore();
+		const openedRooms = computed(() => store.getters.openedRooms);
+		const close = (room) => {
+			store.dispatch('closeRoom', room);
+			if (route.path === `/room/${room}`) {
+				router.push('/');
+			}
+		};
+		return {
+			openedRooms,
+			close,
+		};
 	},
 };
 </script>

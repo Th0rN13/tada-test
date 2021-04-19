@@ -84,6 +84,7 @@ export default {
 	width: 100%;
 	flex: 1 0 400px;
 	overflow: auto;
+	word-break: break-all;
 }
 .chat_wrap p {
 	background: skyblue;

@@ -13,7 +13,7 @@ export const store = new Vuex.Store({
 		return {
 			username: localStorage.getItem('username') || 'anonymous',
 			rooms: [],
-			openedRooms: [],
+			openedRooms: new Set(),
 			messages: [],
 			users: [],
 			serverSettings: {},
@@ -24,6 +24,9 @@ export const store = new Vuex.Store({
 	getters: {
 		roomMessages: (state) => (findRoom) => {
 			return state.messages.filter(({ room }) => findRoom === room);
+		},
+		openedRooms: (state) => {
+			return [...state.openedRooms];
 		},
 	},
 	mutations: {
@@ -56,6 +59,12 @@ export const store = new Vuex.Store({
 		updateName(state, name) {
 			state.username = name;
 		},
+		addOpenedRooms(state, room) {
+			state.openedRooms.add(room);
+		},
+		closeOpenedRoom(state, room) {
+			state.openedRooms.delete(room);
+		},
 	},
 	actions: {
 		async getRooms(store) {
@@ -63,9 +72,14 @@ export const store = new Vuex.Store({
 			store.commit('updateRooms', rooms?.result);
 		},
 		async getRoomHistory(store, room) {
+			store.commit('addOpenedRooms', room);
 			const roomHistory = await getRoomHistory(room);
-			store.commit('updateRoomHistory', roomHistory?.result);
-			store.commit('removeDuplicateMessages');
+			if (roomHistory) {
+				store.commit('updateRoomHistory', roomHistory?.result);
+				store.commit('removeDuplicateMessages');
+			} else {
+				store.commit('closeOpenedRoom', room);
+			}
 		},
 		async getSettings(store) {
 			const settings = await getSettings();
@@ -88,6 +102,9 @@ export const store = new Vuex.Store({
 		updateName(store, name) {
 			localStorage.setItem('username', name);
 			store.commit('updateName', name);
+		},
+		closeRoom(store, room) {
+			store.commit('closeOpenedRoom', room);
 		},
 	},
 });
