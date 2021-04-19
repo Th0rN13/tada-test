@@ -1,5 +1,5 @@
 <template>
-	<div>
+	<div class="input">
 		<input type="text" v-model="line" @keydown.enter="send" />
 		<button @click="send">send</button>
 	</div>
@@ -24,3 +24,9 @@ export default {
 	},
 };
 </script>
+
+<style>
+.input {
+	flex: 0 0 48px;
+}
+</style>

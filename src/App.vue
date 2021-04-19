@@ -45,18 +45,4 @@ main {
 	display: flex;
 	flex-direction: column;
 }
-.chat_wrap {
-	width: 100%;
-	flex: 1 0 400px;
-	overflow: auto;
-}
-.chat {
-	flex: 1 0 320px;
-}
-.room_list {
-	flex: 0 0 200px;
-}
-.input {
-	flex: 0 0 48px;
-}
 </style>
