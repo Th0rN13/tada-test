@@ -35,6 +35,14 @@ export const store = new Vuex.Store({
 		updateRooms(state, payload) {
 			state.rooms = payload;
 		},
+		updateRoomsMessage(state, message) {
+			if (message?.room) {
+				const findRoom = state.rooms.find(({ name }) => name === message?.room);
+				if (findRoom) {
+					findRoom.last_message = message;
+				}
+			}
+		},
 		updateRoomHistory(state, payload) {
 			state.messages = state.messages.concat(payload);
 		},
@@ -89,6 +97,7 @@ export const store = new Vuex.Store({
 		},
 		async message(store, message) {
 			store.commit('message', message);
+			store.commit('updateRoomsMessage', message);
 			if (message.id) {
 				store.commit('filterQueue', message.id);
 			}
