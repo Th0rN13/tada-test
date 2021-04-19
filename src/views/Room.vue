@@ -21,6 +21,7 @@
 <script>
 import { computed, ref, watch } from 'vue';
 import { useStore } from 'vuex';
+import { useRouter } from 'vue-router';
 import InputLine from '@/components/InputLine.vue';
 import ScrollIcon from '@/components/ScrollIcon.vue';
 
@@ -32,8 +33,13 @@ export default {
 		ScrollIcon,
 	},
 	setup(props) {
+		const router = useRouter();
 		const store = useStore();
-		store.dispatch('getRoomHistory', props.room);
+		store.dispatch('getRoomHistory', props.room).then((result) => {
+			if (result !== props.room) {
+				router.push(`/room/${result}`);
+			}
+		});
 
 		const lastItem = ref(null);
 		const scrollToDown = ref(true);

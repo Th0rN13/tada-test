@@ -2,6 +2,8 @@
 	<input type="text" :value="username" @change="change" @keydown.enter="updateName" />
 	<button @click="updateName">Change name</button>
 	<span><b v-if="nameChanged">name changed</b></span>
+	<input type="text" v-model="newRoom" @keydown.enter="gotoNewRoom" />
+	<button @click="gotoNewRoom">Goto NewRoom</button>
 	<p v-for="room in roomList" :key="room">
 		<router-link :to="`/room/${room.name}`">{{ room.name }} room</router-link><br />
 		<span
@@ -14,11 +16,14 @@
 <script>
 import { computed, onMounted, ref } from 'vue';
 import { useStore } from 'vuex';
+import { useRouter } from 'vue-router';
 
 export default {
 	setup() {
 		const store = useStore();
+		const router = useRouter();
 		const username = ref('');
+		const newRoom = ref('');
 		const nameChanged = ref(false);
 		const loading = ref(false);
 		const roomList = computed(() => store.state.rooms);
@@ -31,7 +36,6 @@ export default {
 		const updateName = () => {
 			loading.value = true;
 			store.dispatch('updateName', username.value).then((result) => {
-				console.log(result);
 				loading.value = false;
 				if (result) {
 					username.value = result;
@@ -49,12 +53,18 @@ export default {
 			username.value = value;
 		};
 
+		const gotoNewRoom = () => {
+			router.push(`/room/${newRoom.value}`);
+		};
+
 		return {
 			username,
 			updateName,
 			roomList,
 			change,
 			nameChanged,
+			newRoom,
+			gotoNewRoom,
 		};
 	},
 };

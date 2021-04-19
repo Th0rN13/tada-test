@@ -51,7 +51,7 @@ export function connectWebSocket(name = 'anonymous', connectCb, messageCb) {
 			const message = JSON.parse(event?.data);
 			messageCb(message);
 		} catch (err) {
-			console.log(err);
+			console.log('Catch error:', err);
 		}
 	};
 	return ws;

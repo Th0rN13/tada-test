@@ -69,14 +69,16 @@ export const store = new Vuex.Store({
 			store.commit('updateRooms', rooms?.result);
 		},
 		async getRoomHistory(store, room) {
+			if (Number.isInteger(+store.state.settings?.max_room_title_length)) {
+				room = room.slice(0, +store.state.settings?.max_room_title_length);
+			}
 			store.commit('addOpenedRooms', room);
 			const roomHistory = await getRoomHistory(room);
 			if (roomHistory) {
 				store.commit('updateRoomHistory', roomHistory?.result);
 				store.commit('removeDuplicateMessages');
-			} else {
-				store.commit('closeOpenedRoom', room);
 			}
+			return room;
 		},
 		async getSettings(store) {
 			const settings = await getSettings();
