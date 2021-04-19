@@ -25,6 +25,9 @@ export const store = new Vuex.Store({
 		roomMessages: (state) => (findRoom) => {
 			return state.messages.filter(({ room }) => findRoom === room);
 		},
+		roomQueue: (state) => (findRoom) => {
+			return state.sendQueue.filter(({ room }) => findRoom === room);
+		},
 	},
 	mutations: {
 		removeDuplicateMessages(state) {
@@ -110,7 +113,12 @@ export const store = new Vuex.Store({
 			) {
 				text = text.slice(0, +store.state.settings?.max_message_length);
 			}
-			store.commit('addToQueue', { text, room, id });
+			store.commit('addToQueue', {
+				text,
+				room,
+				id,
+				sender: { username: store.state.username },
+			});
 			sendMessage(room, text, id);
 		},
 		updateName(store, name) {
@@ -123,6 +131,13 @@ export const store = new Vuex.Store({
 		},
 		closeRoom(store, room) {
 			store.commit('closeOpenedRoom', room);
+		},
+		tryRepeatSend(store, repeatId) {
+			const { id, room, text } = store.state.sendQueue.find((el) => el.id === repeatId);
+			sendMessage(room, text, id);
+		},
+		clearMessage(store, id) {
+			store.commit('filterQueue', id);
 		},
 	},
 });

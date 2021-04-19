@@ -1,18 +1,25 @@
 <template>
 	<div class="chat_wrap" @scroll="scroll">
 		<p
-			v-for="(message, idx) in this.roomMessages"
+			v-for="message in this.roomMessages"
 			:class="{ my_message: message?.sender?.username === username }"
 			:key="message.created"
-			:ref="
-				(el) => {
-					if (el && idx === this.roomMessages.length - 1) lastItem = el;
-				}
-			"
 		>
 			<b>{{ message?.sender?.username || 'unknown' }}:</b>
 			{{ message?.text }}
 		</p>
+		<p v-if="roomQueue.length">not yet sended</p>
+		<p
+			v-for="message in this.roomQueue"
+			:class="{ my_message: message?.sender?.username === username }"
+			:key="message.id"
+		>
+			<b>{{ message?.sender?.username || 'unknown' }}:</b>
+			{{ message?.text }}
+			<button @click="repeatSend(message.id)">-></button>
+			<button @click="clearMsg(message.id)">x</button>
+		</p>
+		<span :ref="(el) => (lastItem = el)"></span>
 	</div>
 	<InputLine :room="room" />
 	<ScrollIcon :needScroll="scrollToDown" @toggle-scroll="toggleScroll" />
@@ -43,31 +50,42 @@ export default {
 
 		const lastItem = ref(null);
 		const scrollToDown = ref(true);
-		let scrollingNow = false;
+		const scrollingNow = ref(false);
 
 		const roomMessages = computed(() => store.getters.roomMessages(props.room));
+		const roomQueue = computed(() => store.getters.roomQueue(props.room));
 		const username = computed(() => store.state.username);
 
-		const toggleScroll = (value) => {
+		const toggleScroll = () => {
 			lastItem.value.scrollIntoView(true);
-			scrollToDown.value = value;
+			setTimeout(() => {
+				scrollToDown.value = true;
+			}, 50);
 		};
 
 		const scroll = () => {
-			if (!scrollingNow) {
+			if (!scrollingNow.value) {
 				scrollToDown.value = false;
 			}
+		};
+
+		const repeatSend = (id) => {
+			store.dispatch('tryRepeatSend', id);
+		};
+
+		const clearMsg = (id) => {
+			store.dispatch('clearMessage', id);
 		};
 
 		watch(
 			() => store.getters.roomMessages(props.room),
 			() => {
 				if (scrollToDown.value && lastItem?.value?.scrollIntoView) {
-					scrollingNow = true;
+					scrollingNow.value = true;
 					lastItem.value.scrollIntoView(true);
 					setTimeout(() => {
-						scrollingNow = false;
-					}, 20);
+						scrollingNow.value = false;
+					}, 50);
 				}
 			},
 			{ flush: 'post' },
@@ -75,11 +93,14 @@ export default {
 
 		return {
 			roomMessages,
+			roomQueue,
 			scrollToDown,
 			lastItem,
 			toggleScroll,
 			scroll,
 			username,
+			repeatSend,
+			clearMsg,
 		};
 	},
 };

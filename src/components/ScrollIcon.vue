@@ -1,5 +1,7 @@
 <template>
-	<button class="scroll-icon" @click="toggle">{{ needScroll ? '-' : 'v' }}</button>
+	<button class="scroll-icon" @click="toggle">
+		{{ needScroll ? '-' : 'v' }}
+	</button>
 </template>
 
 <script>
@@ -8,8 +10,9 @@ export default {
 	props: ['needScroll'],
 	setup(props, { emit }) {
 		const toggle = () => {
-			emit('toggle-scroll', !props.needScroll);
+			emit('toggle-scroll');
 		};
+
 		return {
 			toggle,
 		};
