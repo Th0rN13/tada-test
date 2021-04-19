@@ -32,6 +32,10 @@ async function getRequest(url) {
 let ws;
 
 export function connectWebSocket(name = 'anonymous', connectCb, messageCb) {
+	if (ws) {
+		ws.onclose = () => {};
+		ws.close(1000, 'user change name');
+	}
 	ws = new WebSocket(`${wss_url}?username=${name}`);
 	ws.onopen = () => {
 		connectCb(true);
