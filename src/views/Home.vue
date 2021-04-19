@@ -1,16 +1,20 @@
 <template>
-	<input type="text" :value="username" @change="change" @keydown.enter="updateName" />
-	<button @click="updateName">Change name</button>
-	<span><b v-if="nameChanged">name changed</b></span>
-	<input type="text" v-model="newRoom" @keydown.enter="gotoNewRoom" />
-	<button @click="gotoNewRoom">Goto NewRoom</button>
-	<p v-for="room in roomList" :key="room">
-		<router-link :to="`/room/${room.name}`">{{ room.name }} room</router-link><br />
-		<span
-			>last message: <b>{{ room?.last_message?.sender?.username || 'unknown' }}</b>
-			{{ room?.last_message?.text }}</span
-		>
-	</p>
+	<div class="input-wrap">
+		<input type="text" :value="username" @change="change" @keydown.enter="updateName" />
+		<button @click="updateName">Change name</button>
+		<span><b v-if="nameChanged">name changed</b></span>
+	</div>
+	<div class="input-wrap">
+		<input type="text" v-model="newRoom" @keydown.enter="gotoNewRoom" />
+		<button @click="gotoNewRoom">Goto NewRoom</button>
+	</div>
+	<div class="rooms-wrap">
+		<div class="room" v-for="room in roomList" :key="room">
+			<router-link :to="`/room/${room.name}`">{{ room.name }}</router-link>
+			<b>{{ room?.last_message?.sender?.username || 'unknown' }}</b>
+			<span>{{ room?.last_message?.text }}</span>
+		</div>
+	</div>
 </template>
 
 <script>
@@ -69,3 +73,50 @@ export default {
 	},
 };
 </script>
+
+<style>
+.input-wrap {
+	padding: 8px;
+}
+.input-wrap input {
+	padding: 4px;
+	width: 200px;
+	margin-right: 8px;
+}
+.input-wrap button {
+	padding: 4px;
+	width: 120px;
+}
+.rooms-wrap {
+	padding: 8px;
+}
+.room {
+	display: flex;
+	padding: 12px;
+}
+.room:hover {
+	background-color: whitesmoke;
+}
+.room a {
+	width: 200px;
+	text-overflow: ellipsis;
+	overflow: hidden;
+	white-space: nowrap;
+	margin-right: 8px;
+}
+.room b {
+	margin-right: 8px;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	width: 200px;
+	max-height: 48px;
+	overflow: hidden;
+}
+.room span {
+	margin-left: 8px;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	width: 600px;
+	overflow: hidden;
+}
+</style>

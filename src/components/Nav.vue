@@ -1,10 +1,22 @@
 <template>
 	<div class="nav">
-		<router-link to="/" exact>Home</router-link>
-		<div v-for="room in openedRooms" :key="room">
-			<router-link :to="`/room/${room}`">{{ room }} room</router-link>
-			<button class="close" @click="close(room)">x</button>
-		</div>
+		<router-link to="/" exact custom v-slot="{ href, navigate, isExactActive }">
+			<div class="link" :class="[isExactActive && 'router-link-exact-active']">
+				<a :href="href" @click="navigate">Home</a>
+			</div>
+		</router-link>
+		<router-link
+			v-for="room in openedRooms"
+			:key="room"
+			:to="`/room/${room}`"
+			custom
+			v-slot="{ href, navigate, isExactActive }"
+		>
+			<div class="link" :class="[isExactActive && 'router-link-exact-active']">
+				<a :href="href" @click="navigate">{{ room }}</a>
+				<button class="close" @click="close(room)">x</button>
+			</div>
+		</router-link>
 		<div class="status" :class="{ online: status }"></div>
 	</div>
 </template>
@@ -68,5 +80,12 @@ export default {
 }
 .status.online {
 	background-color: greenyellow;
+}
+.link {
+	padding: 8px;
+	border-radius: 4px;
+}
+.router-link-exact-active {
+	background-color: wheat;
 }
 </style>
