@@ -1,30 +1,35 @@
 <template>
-	<input type="text" v-model="username" @keydown.enter="change" />
-	<button @click="change">Change name</button>
+	<input type="text" :value="username" @change="change" @keydown.enter="updateName" />
+	<button @click="updateName">Change name</button>
 	<p v-for="room in roomList" :key="room">
 		<router-link :to="`/room/${room.name}`">{{ room.name }} room</router-link>
 	</p>
 </template>
 
 <script>
-import { computed, ref } from 'vue';
+import { computed } from 'vue';
 import { useStore } from 'vuex';
 
 export default {
 	setup() {
 		const store = useStore();
-		const username = ref(store.state.username);
+		let username = store.state.username;
 
-		const change = () => {
+		const updateName = () => {
 			store.dispatch('updateName', username);
+		};
+
+		const change = ({ target: { value } }) => {
+			username = value;
 		};
 
 		const roomList = computed(() => store.state.rooms);
 
 		return {
 			username,
-			change,
+			updateName,
 			roomList,
+			change,
 		};
 	},
 };

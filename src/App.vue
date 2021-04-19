@@ -1,6 +1,6 @@
 <template>
 	<main>
-		<Nav />
+		<Nav :status="status" />
 		<router-view />
 	</main>
 </template>
@@ -17,13 +17,17 @@ export default {
 		const store = useStore();
 
 		const username = computed(() => store.state.username);
+		const status = computed(() => store.state.status === 'online');
 
 		watch(username, () => {
 			connectStoreToChat(store, username.value);
 		});
+		connectStoreToChat(store, username.value);
 		store.dispatch('getRooms');
 		store.dispatch('getSettings');
-		return {};
+		return {
+			status,
+		};
 	},
 	components: {
 		Nav,

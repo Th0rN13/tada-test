@@ -11,8 +11,9 @@ import {
 export const store = new Vuex.Store({
 	state() {
 		return {
-			username: 'myname',
+			username: localStorage.getItem('username') || 'anonymous',
 			rooms: [],
+			openedRooms: [],
 			messages: [],
 			users: [],
 			serverSettings: {},
@@ -85,6 +86,7 @@ export const store = new Vuex.Store({
 			sendMessage(room, text, id);
 		},
 		updateName(store, name) {
+			localStorage.setItem('username', name);
 			store.commit('updateName', name);
 		},
 	},
