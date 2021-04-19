@@ -10,7 +10,7 @@
 </template>
 
 <script>
-import { computed } from 'vue';
+import { computed, watch } from 'vue';
 import { useStore } from 'vuex';
 import { useRouter, useRoute } from 'vue-router';
 
@@ -20,13 +20,22 @@ export default {
 		const router = useRouter();
 		const route = useRoute();
 		const store = useStore();
-		const openedRooms = computed(() => store.getters.openedRooms);
+		const openedRooms = computed(() => store.state.openedRooms);
+
 		const close = (room) => {
 			store.dispatch('closeRoom', room);
 			if (route.path === `/room/${room}`) {
 				router.push('/');
 			}
 		};
+
+		watch(openedRooms, (newOpened, oldOpened) => {
+			const roomName = route.path.replace('/room/', '');
+			if (!newOpened.has(roomName) && oldOpened.has(roomName)) {
+				router.push('/');
+			}
+		});
+
 		return {
 			openedRooms,
 			close,
