@@ -7,6 +7,7 @@
 
 <script>
 import { useStore } from 'vuex';
+import { computed, watch } from 'vue';
 import { connectStoreToChat } from '@/store/chat';
 import Nav from '@/components/Nav.vue';
 
@@ -14,7 +15,12 @@ export default {
 	name: 'App',
 	setup() {
 		const store = useStore();
-		connectStoreToChat(store);
+
+		const username = computed(() => store.state.username);
+
+		watch(username, () => {
+			connectStoreToChat(store, username.value);
+		});
 		store.dispatch('getRooms');
 		store.dispatch('getSettings');
 		return {};

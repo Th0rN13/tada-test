@@ -1,5 +1,5 @@
 <template>
-	<button class="scroll-icon" @click="toggle">{{ needScroll ? 'v' : 'x' }}</button>
+	<button class="scroll-icon" @click="toggle">{{ needScroll ? '-' : 'v' }}</button>
 </template>
 
 <script>

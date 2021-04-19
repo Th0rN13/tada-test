@@ -52,6 +52,9 @@ export const store = new Vuex.Store({
 		filterQueue(state, filterId) {
 			state.sendQueue = state.sendQueue.filter(({ id }) => id !== filterId);
 		},
+		updateName(state, name) {
+			state.username = name;
+		},
 	},
 	actions: {
 		async getRooms(store) {
@@ -81,15 +84,18 @@ export const store = new Vuex.Store({
 			store.commit('addToQueue', { text, room, id });
 			sendMessage(room, text, id);
 		},
+		updateName(store, name) {
+			store.commit('updateName', name);
+		},
 	},
 });
 
-export function connectStoreToChat(store) {
+export function connectStoreToChat(store, username) {
 	function statusCb(status) {
 		store.dispatch('connectStatus', status);
 	}
 	function messageCb(message) {
 		store.dispatch('message', message);
 	}
-	connectWebSocket('myname', statusCb, messageCb);
+	connectWebSocket(username, statusCb, messageCb);
 }

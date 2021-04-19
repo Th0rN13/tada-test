@@ -1,8 +1,8 @@
 <template>
-	<div class="chat_wrap" @scroll="toggleScroll(false)">
+	<div class="chat_wrap" @scroll="scroll">
 		<p
 			v-for="(message, idx) in this.roomMessages"
-			:class="{ my_message: message?.sender?.username === 'myname' }"
+			:class="{ my_message: message?.sender?.username === username }"
 			:key="message.created"
 			:ref="
 				(el) => {
@@ -40,9 +40,17 @@ export default {
 		let scrollingNow = false;
 
 		const roomMessages = computed(() => store.getters.roomMessages(props.room));
+		const username = computed(() => store.state.username);
 
 		const toggleScroll = (value) => {
-			if (!scrollingNow) scrollToDown.value = value;
+			lastItem.value.scrollIntoView(true);
+			scrollToDown.value = value;
+		};
+
+		const scroll = () => {
+			if (!scrollingNow) {
+				scrollToDown.value = false;
+			}
 		};
 
 		watch(
@@ -64,6 +72,8 @@ export default {
 			scrollToDown,
 			lastItem,
 			toggleScroll,
+			scroll,
+			username,
 		};
 	},
 };
