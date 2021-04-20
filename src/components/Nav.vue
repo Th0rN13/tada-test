@@ -38,13 +38,15 @@
 				class="status"
 				:class="{ online: status }"
 				:title="`Connection status: ${status ? 'ok' : 'bad'}`"
-			></div>
+			>
+				{{ status && `${latency}ms` }}
+			</div>
 		</div>
 	</div>
 </template>
 
 <script>
-import { computed, watch, ref } from 'vue';
+import { computed, watch, ref, onUnmounted } from 'vue';
 import { useStore } from 'vuex';
 import { useRouter, useRoute } from 'vue-router';
 
@@ -62,6 +64,7 @@ export default {
 		const editRoomMode = ref(roomName.value === '/');
 		const inputtedRoom = ref('');
 		const loading = ref(false);
+		const latency = computed(() => store.state.latency);
 
 		const enterEditNameMode = () => {
 			editNameMode.value = true;
@@ -95,6 +98,14 @@ export default {
 			editRoomMode.value = false;
 		};
 
+		const interval = setInterval(() => {
+			store.dispatch('updateLatency');
+		}, 1000);
+
+		onUnmounted(() => {
+			clearInterval(interval);
+		});
+
 		watch(openedRooms, (newOpened, oldOpened) => {
 			if (!newOpened.has(roomName) && oldOpened.has(roomName)) {
 				router.push('/');
@@ -121,6 +132,7 @@ export default {
 			roomName,
 			enterEditNameMode,
 			enterEditRoomMode,
+			latency,
 		};
 	},
 };
@@ -148,14 +160,20 @@ export default {
 .status {
 	position: absolute;
 	right: 8px;
-	width: 24px;
-	height: 24px;
-	top: calc(50% - 12px);
+	width: 40px;
+	height: 40px;
+	top: calc(50% - 20px);
 	border-radius: 50%;
 	background-color: red;
+	color: red;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 12px;
 }
 .status.online {
 	background-color: greenyellow;
+	color: red;
 }
 .link {
 	padding: 8px;
@@ -173,9 +191,6 @@ export default {
 }
 .name-change-hint {
 	margin-right: 8px;
-}
-.ok {
-	color: green;
 }
 .cancel {
 	color: red;

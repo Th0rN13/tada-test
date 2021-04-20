@@ -6,6 +6,7 @@ import {
 	getSettings,
 	getRoomHistory,
 	sendMessage,
+	ping,
 } from '@/helpers/api';
 
 export const store = new Vuex.Store({
@@ -19,6 +20,9 @@ export const store = new Vuex.Store({
 			serverSettings: {},
 			status: 'offline',
 			sendQueue: [],
+			pingStart: 0,
+			latency: '-',
+			timerId: undefined,
 		};
 	},
 	getters: {
@@ -84,6 +88,19 @@ export const store = new Vuex.Store({
 				},
 			});
 		},
+		pingStart(state, timerId) {
+			state.pingStart = Date.now();
+			state.timerId = timerId;
+		},
+		pingEnd(state) {
+			clearTimeout(state.timerId);
+			state.status = 'online';
+			state.latency = Date.now() - state.pingStart;
+		},
+		pingError(state) {
+			state.status = 'offline';
+			state.latency = 0;
+		},
 	},
 	actions: {
 		async getRooms(store) {
@@ -111,10 +128,14 @@ export const store = new Vuex.Store({
 			store.commit('updateStatus', status);
 		},
 		async message(store, message) {
-			store.commit('message', message);
-			store.commit('updateRoomsMessage', message);
-			if (message.id) {
-				store.commit('filterQueue', message.id);
+			if (message.pong) {
+				store.commit('pingEnd');
+			} else if (message.room && message.text && message.created && message.sender) {
+				store.commit('message', message);
+				store.commit('updateRoomsMessage', message);
+				if (message.id) {
+					store.commit('filterQueue', message.id);
+				}
 			}
 		},
 		async newSendMessage(store, { text, room }) {
@@ -156,6 +177,13 @@ export const store = new Vuex.Store({
 			}
 			store.commit('createRoom', room);
 			return room;
+		},
+		updateLatency(store) {
+			const timerId = setTimeout(() => {
+				store.commit('pingError');
+			}, 1000);
+			store.commit('pingStart', timerId);
+			ping();
 		},
 	},
 });
