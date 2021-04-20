@@ -72,8 +72,17 @@ export const store = new Vuex.Store({
 		addOpenedRooms(state, room) {
 			state.openedRooms.add(room);
 		},
-		closeOpenedRoom(state, room) {
-			state.openedRooms.delete(room);
+		createRoom(state, roomName) {
+			const now = new Date();
+			state.rooms.push({
+				name: roomName,
+				last_message: {
+					room: roomName,
+					created: now.toISOString(),
+					sender: { username: state.username },
+					text: `создал новую комнату`,
+				},
+			});
 		},
 	},
 	actions: {
@@ -86,6 +95,7 @@ export const store = new Vuex.Store({
 			if (Number.isInteger(+store.state.settings?.max_room_title_length)) {
 				room = room.slice(0, +store.state.settings?.max_room_title_length);
 			}
+			if (store.state.openedRooms.has(room)) return;
 			store.commit('addOpenedRooms', room);
 			const roomHistory = await getRoomHistory(room);
 			if (roomHistory) {
@@ -133,15 +143,20 @@ export const store = new Vuex.Store({
 			}
 			return null;
 		},
-		closeRoom(store, room) {
-			store.commit('closeOpenedRoom', room);
-		},
 		tryRepeatSend(store, repeatId) {
 			const { id, room, text } = store.state.sendQueue.find((el) => el.id === repeatId);
 			sendMessage(room, text, id);
 		},
 		clearMessage(store, id) {
 			store.commit('filterQueue', id);
+		},
+		createRoom(store, room) {
+			if (!room || !room.trim()) return;
+			if (Number.isInteger(+store.state.settings?.max_room_title_length)) {
+				room = room.slice(0, +store.state.settings?.max_room_title_length);
+			}
+			store.commit('createRoom', room);
+			return room;
 		},
 	},
 });

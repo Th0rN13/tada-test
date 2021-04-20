@@ -24,7 +24,7 @@ async function getRequest(url) {
 		const result = await response.json();
 		return result;
 	} catch (err) {
-		console.log('Catch error:', err);
+		console.warn('Catch error:', err);
 		return null;
 	}
 }
@@ -51,7 +51,7 @@ export function connectWebSocket(name = 'anonymous', connectCb, messageCb) {
 			const message = JSON.parse(event?.data);
 			messageCb(message);
 		} catch (err) {
-			console.log('Catch error:', err);
+			console.warn('Catch error:', err);
 		}
 	};
 	return ws;

@@ -1,6 +1,11 @@
 <template>
-	<button class="scroll-icon" @click="toggle">
-		{{ needScroll ? '-' : 'v' }}
+	<button
+		v-if="!needScroll"
+		class="scroll-icon"
+		@click="toggle"
+		title="Прокручивать к новым сообщениям"
+	>
+		v
 	</button>
 </template>
 
@@ -12,7 +17,6 @@ export default {
 		const toggle = () => {
 			emit('toggle-scroll');
 		};
-
 		return {
 			toggle,
 		};
@@ -29,8 +33,13 @@ export default {
 	background-color: blue;
 	color: white;
 	border: none;
-	bottom: 56px;
+	bottom: 40px;
 	right: 24px;
 	font-size: 2.5em;
+	outline: none;
+	border: 2px solid transparent;
+}
+.scroll-icon:active {
+	border: 2px solid rgb(0, 0, 151);
 }
 </style>
