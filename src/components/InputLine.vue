@@ -1,7 +1,13 @@
 <template>
 	<div class="input">
-		<input type="text" v-model="line" @keydown.enter="send" />
-		<button @click="send">send</button>
+		<input
+			class="send-input"
+			type="text"
+			v-model="line"
+			@keydown.enter="send"
+			placeholder="Введите сообщение..."
+		/>
+		<button class="send-button" @click="send">Отправить сообщение</button>
 	</div>
 </template>
 
@@ -29,6 +35,19 @@ export default {
 
 <style>
 .input {
-	flex: 0 0 48px;
+	display: flex;
+	padding: 0px;
+	border-top: 1px solid gray;
+}
+.send-input {
+	padding: 4px;
+	margin: 2px;
+	flex: 1 0 320px;
+	width: 320px;
+}
+.send-button {
+	padding: 4px;
+	margin: 2px;
+	flex: 0 0 200px;
 }
 </style>
