@@ -28,13 +28,13 @@ export const store = new Vuex.Store({
 		roomQueue: (state) => (findRoom) => {
 			return state.sendQueue.filter(({ room }) => findRoom === room);
 		},
-	},
-	mutations: {
-		removeDuplicateMessages(state) {
-			state.messages = state.messages.filter(
-				({ created }, idx, arr) => idx === arr.findIndex((msg) => msg.created === created),
+		roomsSorted: (state) => {
+			return state.rooms.sort((l, r) =>
+				r?.last_message?.created.localeCompare(l?.last_message?.created),
 			);
 		},
+	},
+	mutations: {
 		updateRooms(state, payload) {
 			state.rooms = payload;
 		},
@@ -100,7 +100,6 @@ export const store = new Vuex.Store({
 			const roomHistory = await getRoomHistory(room);
 			if (roomHistory) {
 				store.commit('updateRoomHistory', roomHistory?.result);
-				store.commit('removeDuplicateMessages');
 			}
 			return room;
 		},

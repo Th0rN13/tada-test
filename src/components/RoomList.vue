@@ -9,7 +9,12 @@
 		>
 			<a :href="href" class="room" @click="navigate">
 				<div class="room__title">Комната: {{ room.name }}</div>
-				<div class="room__last-message">Последнее сообщение:</div>
+				<div class="room__last-message">
+					Последнее сообщение:
+					<span class="room__last-author">
+						<TimeDate :date="room?.last_message?.created" />
+					</span>
+				</div>
 				<div class="room__last-message">
 					<span class="room__last-author">{{
 						room?.last_message?.sender?.username || 'unknown'
@@ -25,12 +30,14 @@
 <script>
 import { computed } from 'vue';
 import { useStore } from 'vuex';
+import TimeDate from './TimeDate.vue';
 
 export default {
 	name: 'RoomList',
+	components: { TimeDate },
 	setup() {
 		const store = useStore();
-		const roomList = computed(() => store.state.rooms);
+		const roomList = computed(() => store.getters.roomsSorted);
 
 		return {
 			roomList,
