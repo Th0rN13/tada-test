@@ -58,7 +58,9 @@ export default {
 		};
 
 		const gotoNewRoom = () => {
-			router.push(`/room/${newRoom.value}`);
+			if (newRoom.value.trim()) {
+				router.push(`/room/${newRoom.value}`);
+			}
 		};
 
 		return {

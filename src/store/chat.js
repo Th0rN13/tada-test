@@ -43,6 +43,8 @@ export const store = new Vuex.Store({
 				const findRoom = state.rooms.find(({ name }) => name === message?.room);
 				if (findRoom) {
 					findRoom.last_message = message;
+				} else {
+					state.rooms.push({ name: message?.room, last_message: message });
 				}
 			}
 		},
@@ -80,6 +82,7 @@ export const store = new Vuex.Store({
 			store.commit('updateRooms', rooms?.result);
 		},
 		async getRoomHistory(store, room) {
+			if (!room || !room.trim()) return;
 			if (Number.isInteger(+store.state.settings?.max_room_title_length)) {
 				room = room.slice(0, +store.state.settings?.max_room_title_length);
 			}
@@ -106,6 +109,7 @@ export const store = new Vuex.Store({
 			}
 		},
 		async newSendMessage(store, { text, room }) {
+			if (!text || !text.trim() || !room || !room.trim()) return;
 			const id = uuid();
 			if (
 				Number.isInteger(+store.state.settings?.max_message_length) &&
@@ -122,7 +126,7 @@ export const store = new Vuex.Store({
 			sendMessage(room, text, id);
 		},
 		updateName(store, name) {
-			if (name && name.length <= store.state.settings?.max_username_length) {
+			if (name && name.trim() && name.length <= store.state.settings?.max_username_length) {
 				localStorage.setItem('username', name);
 				store.commit('updateName', name);
 				return name;
